@@ -7,7 +7,7 @@ const commentSchema = new mongoose.Schema({
   location: {
     latitude: { type: Number, required: true },
     longitude: { type: Number, required: true },
-    altitude: { type: Number, required: true },
+    accuracy: { type: Number, required: true },
   },
 });
 
