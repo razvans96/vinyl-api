@@ -6,7 +6,13 @@ const authRoutes = require('./src/routes/authRoutes');
 const songRoutes = require('./src/routes/songRoutes');
 const commentRoutes = require('./src/routes/commentRoutes');
 
-dotenv.config();
+if (process.env.NODE_ENV === 'test') {
+  console.log("test");
+  dotenv.config({ path: '.env.test' });
+} else {
+  console.log("prod");
+  dotenv.config();
+}
 
 // Conexión a la base de datos
 connectDB();
@@ -28,6 +34,8 @@ app.use((err, req, res, next) => {
 
 // Puerto de escucha
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
   console.log(`Servidor escuchando en el puerto ${PORT}`);
 });
+
+module.exports = server;
