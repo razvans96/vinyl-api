@@ -1,6 +1,7 @@
 const request = require('supertest');
 const app = require('../../app');
 const User = require('../models/User');
+const db = require('../config/database');
 
 require('dotenv').config({ path: '../../.env.test' });
 
@@ -8,6 +9,10 @@ describe('Registro y login de usuarios', () => {
   beforeEach(async () => {
     // Antes de cada prueba, borramos todos los usuarios de la base de datos
     await User.deleteMany();
+  });
+
+  afterAll(async () => {
+    await db.closeDB();
   });
 
   describe('POST /register', () => {

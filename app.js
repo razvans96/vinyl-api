@@ -1,21 +1,15 @@
 const express = require('express');
 const app = express();
-const dotenv = require('dotenv');
-const connectDB = require('./src/config/database');
+require('dotenv').config()
+const db = require('./src/config/database');
 const authRoutes = require('./src/routes/authRoutes');
 const songRoutes = require('./src/routes/songRoutes');
 const commentRoutes = require('./src/routes/commentRoutes');
 
-if (process.env.NODE_ENV === 'test') {
-  console.log("test");
-  dotenv.config({ path: '.env.test' });
-} else {
-  console.log("prod");
-  dotenv.config();
-}
+
 
 // Conexión a la base de datos
-connectDB();
+db.connectDB();
 
 // Middleware
 app.use(express.json());
@@ -33,9 +27,38 @@ app.use((err, req, res, next) => {
 });
 
 // Puerto de escucha
-const PORT = process.env.PORT || 3000;
-const server = app.listen(PORT, () => {
-  console.log(`Servidor escuchando en el puerto ${PORT}`);
+if (!module.parent) {
+  const PORT = process.env.PORT || 3000;
+  const server = app.listen(PORT, () => {
+    console.log(`Servidor escuchando en el puerto ${PORT}`);
+  });
+}
+
+
+// PARA KILL DEL PROCESO
+// TODO: Detener también el servidor
+process.on('SIGINT', async () => {
+  try {
+    await db.closeDB;
+    console.log('Conexión a la base de datos cerrada');
+    process.exit(0)
+  } catch (error) {
+    console.error('Error al cerrar la conexión o el servidor:', error);
+    process.exit(1);
+  }
 });
 
-module.exports = server;
+// PARA NODEMON RESTART
+// TODO: Detener también el servidor
+process.on('SIGUSR2', async () => {
+  try {
+    await db.closeDB;
+    console.log('Conexión a la base de datos cerrada');
+    process.exit(0)
+  } catch (error) {
+    console.error('Error al cerrar la conexión o el servidor:', error);
+    process.exit(1);
+  }
+});
+
+module.exports = app;

@@ -8,11 +8,16 @@ on:
   workflow_dispatch:
 permissions: write-all
 jobs:
-  build:
+  build-backend:
     runs-on: ubuntu-latest
     container: node:16-alpine
-
+    name: build and test
+    env:
+      CLIENT_ID: ${{ secrets.CLIENT_ID }}
+      CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
     steps:
       - uses: actions/checkout@v3
       - name: Install dependencies
         run: npm install
+    name: Test
+        run: npm test
