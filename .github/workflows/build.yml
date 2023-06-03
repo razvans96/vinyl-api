@@ -17,6 +17,7 @@ jobs:
       TEST_MONGODB_URI: ${{ secrets.TEST_MONGODB_URI }}
       JWT_SECRET: ${{ secrets.JWT_SECRET }}
       JWT_EXPIRES_IN: ${{ secrets.JWT_EXPIRES_IN }}
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - name: Start MongoDB
         uses: supercharge/mongodb-github-action@1.8.0
@@ -24,10 +25,13 @@ jobs:
       - name: Install dependencies
         run: npm install
       - name: Test
-        run: npm run test-gh-actions
-      - uses: actions/upload-artifact@v2
+        uses: mattallty/jest-github-action@v1
+        with:
+          test-command: npm run coverage-gh-actions
+      - uses: actions/upload-artifact@v3
         if: success() || failure() 
         with:
           name: test-results 
-          path: ./coverage/test.results.xml
+          path: |
+            ./coverage/
   

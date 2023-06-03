@@ -6,7 +6,7 @@
   "scripts": {
     "start": "set NODE_ENV=production&&nodemon src/main.js",
     "test": "set NODE_ENV=test&&jest --detectOpenHandles",
-    "test-gh-actions": "set NODE_ENV=test&&jest --reporters=default --reporters=jest-junit",
+    "coverage-gh-actions": "set NODE_ENV=test&&jest --reporters=default --reporters=jest-junit --coverage --coverageReporters=text --coverageReporters=html --coverageDirectory=./coverage/",
     "lint": "eslint src/**/*.js -f checkstyle -o coverage/eslint-result.xml"
   },
   "jest-junit": { 
