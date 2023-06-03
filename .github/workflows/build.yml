@@ -10,7 +10,6 @@ permissions: write-all
 jobs:
   build-backend:
     runs-on: ubuntu-latest
-    container: node:16-alpine
     name: build and test
     env:
       CLIENT_ID: ${{ secrets.CLIENT_ID }}
