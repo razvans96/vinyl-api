@@ -16,6 +16,7 @@ jobs:
       CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
       TEST_MONGODB_URI: ${{ secrets.TEST_MONGODB_URI }}
       JWT_SECRET: ${{ secrets.JWT_SECRET }}
+      JWT_EXPIRES_IN: ${{ secrets.JWT_EXPIRES_IN }}
     steps:
       - name: Start MongoDB
         uses: supercharge/mongodb-github-action@1.8.0
