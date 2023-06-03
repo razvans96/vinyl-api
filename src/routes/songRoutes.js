@@ -1,9 +1,9 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const songController = require('../controllers/songController');
+const songController = require("../controllers/songController");
 
-router.get('/songs', songController.getSongs);
-router.get('/songs/search', songController.searchSongs);
-router.post('/songs', songController.createSong);
+router.get("/songs", songController.getSongs);
+router.get("/songs/search", songController.searchSongs);
+router.post("/songs", songController.createSong);
 
 module.exports = router;

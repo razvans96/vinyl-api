@@ -1,11 +1,13 @@
-const mongoose = require('mongoose');
-require('dotenv').config()
+const mongoose = require("mongoose");
+require("dotenv").config();
 
-const isTestEnvironment = process.env.NODE_ENV === 'test';
+const isTestEnvironment = process.env.NODE_ENV === "test";
 
 console.log(process.env.TEST_MONGODB_URI);
 
-const dbURI = isTestEnvironment ? process.env.TEST_MONGODB_URI : process.env.MONGODB_URI;
+const dbURI = isTestEnvironment
+  ? process.env.TEST_MONGODB_URI
+  : process.env.MONGODB_URI;
 
 const connectDB = async () => {
   try {
@@ -23,7 +25,7 @@ const connectDB = async () => {
 
 const closeDB = async () => {
   await mongoose.connection.close();
-  console.log('Conexión a la base de datos cerrada');
+  console.log("Conexión a la base de datos cerrada");
 };
 
 module.exports = { connectDB, closeDB };
