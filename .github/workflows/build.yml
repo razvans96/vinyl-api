@@ -15,6 +15,7 @@ jobs:
     env:
       CLIENT_ID: ${{ secrets.CLIENT_ID }}
       CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
+      TEST_MONGODB_URI: ${{ secrets.TEST_MONGODB_URI }}
     steps:
       - name: Start MongoDB
         uses: supercharge/mongodb-github-action@1.8.0
