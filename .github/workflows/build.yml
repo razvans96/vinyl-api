@@ -25,7 +25,7 @@ jobs:
       - name: Install dependencies
         run: npm install
       - name: Test
-        uses: mattallty/jest-github-action@v1
+        uses: mattallty/jest-github-action@v1.0.3
         with:
           test-command: npm run coverage-gh-actions
       - uses: actions/upload-artifact@v3
