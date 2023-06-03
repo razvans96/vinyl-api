@@ -24,4 +24,10 @@ jobs:
       - name: Install dependencies
         run: npm install
       - name: Test
-        run: npm test
+        run: npm test-jenkins
+      - uses: actions/upload-artifact@v2
+        if: success() || failure() 
+        with:
+          name: test-results 
+          path: ./coverage/test.results.xml
+  
