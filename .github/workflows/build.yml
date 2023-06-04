@@ -60,7 +60,7 @@ jobs:
         with:
           registry: gcr.io
           project_id: ${{ secrets.GCP_PROJECT_ID }}
-          image_name: hightracks-api
+          image_name: vinyl-api
           image_tag: latest, ${{ github.sha }}
           dockerfile: Dockerfile
           context: ./
