@@ -44,4 +44,24 @@ jobs:
           repo-token: "${{ secrets.GITHUB_TOKEN }}" 
           report-json: "./coverage/eslint-result.json"
         continue-on-error: true
+  build-and-push-gcr-backend:
+    name: Build & Push to GCR
+    needs: [build-backend]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Authenticate to Google Cloud
+        id: auth
+        uses: google-github-actions/auth@v0
+        with:
+          credentials_json: '${{ secrets.GCP_AUTH }}'
+      - name: Building and pushing the image
+        uses: RafikFarhad/push-to-gcr-github-action@v5-beta
+        with:
+          registry: gcr.io
+          project_id: ${{ secrets.GCP_PROJECT_ID }}
+          image_name: hightracks-api
+          image_tag: latest, ${{ github.sha }}
+          dockerfile: Dockerfile
+          context: ./
   
