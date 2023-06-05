@@ -3,8 +3,6 @@ require("dotenv").config();
 
 const isTestEnvironment = process.env.NODE_ENV === "test";
 
-console.log(process.env.TEST_MONGODB_URI);
-
 const dbURI = isTestEnvironment
   ? process.env.TEST_MONGODB_URI
   : process.env.MONGODB_URI;
@@ -17,7 +15,6 @@ const connectDB = async () => {
     });
     console.log(`MongoDB Connected: ${conn.connection.host}`);
   } catch (err) {
-    console.log(dbURI);
     console.error(`Error connecting to MongoDB: ${err.message}`);
     process.exit(1);
   }

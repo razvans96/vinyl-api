@@ -64,4 +64,24 @@ jobs:
           image_tag: latest, ${{ github.sha }}
           dockerfile: Dockerfile
           context: ./
-  
+  deploy:
+    needs: [build-and-push-gcr-backend]
+    runs-on: ubuntu-latest
+    name: Deploy to Server
+    steps:
+      - name: Install SSH Key
+        uses: shimataro/ssh-key-action@v2
+        with:
+          key: ${{ secrets.SSH_KEY }}
+          known_hosts: 'un-valor-para-que-no-de-error'
+      - name: Adding Known Hosts
+        run: ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
+      - name: Deploy
+        run: |
+            ssh ubuntu@${{ secrets.SSH_HOST }} "if [ ! -d 'vinyl-api' ]; then \
+                git clone https://github.com/razvans96/vinyl-api.git; \
+              else \
+                cd vinyl-api && git stash && git fetch --all && git reset --hard origin/main && git pull origin main; \
+              fi"
+            ssh ubuntu@${{ secrets.SSH_HOST }} "cd vinyl-api && echo -e 'MONGODB_URI=${{ secrets.MONGODB_URI }}\nCLIENT_ID=${{ secrets.CLIENT_ID }}\nCLIENT_SECRET=${{ secrets.CLIENT_SECRET }}' > .env"
+            ssh ubuntu@${{ secrets.SSH_HOST }} "cd vinyl-api && docker-compose pull && docker-compose up -d --remove-orphans && yes | docker image prune"
