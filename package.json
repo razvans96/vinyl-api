@@ -10,7 +10,7 @@
     "lint": "eslint src/**/*.js -f checkstyle -o coverage/eslint-result.xml",
     "lint:json": "eslint src/**/*.js --format json -o coverage/eslint-result.json"
   },
-  "jest-junit": { 
+  "jest-junit": {
     "outputDirectory": "./coverage/",
     "outputName": "test.results.xml",
     "usePathForSuiteName": "true"
@@ -20,6 +20,7 @@
   "license": "ISC",
   "dependencies": {
     "bcrypt": "^5.1.0",
+    "cors": "^2.8.5",
     "express": "^4.18.2",
     "jsonwebtoken": "^9.0.0",
     "mongoose": "^7.2.2",
