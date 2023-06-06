@@ -5,7 +5,9 @@ require("dotenv").config();
 const authRoutes = require("./routes/authRoutes");
 const songRoutes = require("./routes/songRoutes");
 const commentRoutes = require("./routes/commentRoutes");
+//const spotify = require("./config/spotify");
 
+//spotify.renewSpotifyAccessToken();
 // Middleware
 app.use(cors());
 app.use(express.json());

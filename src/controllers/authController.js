@@ -1,10 +1,39 @@
 const User = require("../models/User");
-const { generateToken } = require("../config/jwt");
+const jwt = require("../config/jwt");
 const bcrypt = require("bcrypt");
+const { JSONResponse } = require("../config/jsonResponse");
+
+const verify = async (req, res, next) => {
+  try {
+    // Verificar el token de autenticación del usuario
+    const authHeader = req.headers.authorization;
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+      return JSONResponse(res, 401, {
+        error: {
+          code: "401",
+          message:
+            "Error de autentificación. El token no existe o el formato es incorrecto.",
+        },
+      });
+    }
+    const token = authHeader.split(" ")[1];
+    req.user = jwt.verifyToken(token);
+    console.log(req.user);
+    next();
+    // El token es válido y decodificado contiene la información del usuario
+  } catch (error) {
+    JSONResponse(res, 401, {
+      error: {
+        code: "401",
+        message: "El token no es válido.",
+      },
+    });
+  }
+};
 
 const register = async (req, res) => {
   try {
-    const { username, password } = req.body;
+    const { name, username, password } = req.body;
     const hashedPassword = await bcrypt.hash(password, 10);
 
     // Verificar si el nombre de usuario ya está registrado
@@ -16,11 +45,11 @@ const register = async (req, res) => {
     }
 
     // Crear un nuevo usuario
-    const user = new User({ username, password: hashedPassword });
+    const user = new User({ name, username, password: hashedPassword });
     await user.save();
 
     // Generar un token JWT para el usuario registrado
-    const token = generateToken(user._id);
+    const token = jwt.generateToken(user._id);
 
     // Responder con el token y los detalles del usuario
     res.status(201).json({
@@ -29,6 +58,7 @@ const register = async (req, res) => {
       user: {
         id: user._id,
         username: user.username,
+        name: user.name,
       },
     });
   } catch (err) {
@@ -54,7 +84,7 @@ const login = async (req, res) => {
     }
 
     // Generar un token JWT para el usuario autenticado
-    const token = generateToken(user._id);
+    const token = jwt.generateToken(user._id);
 
     // Responder con el token y los detalles del usuario
     res.status(200).json({
@@ -63,6 +93,7 @@ const login = async (req, res) => {
       user: {
         id: user._id,
         username: user.username,
+        name: user.name,
       },
     });
   } catch (err) {
@@ -71,4 +102,4 @@ const login = async (req, res) => {
   }
 };
 
-module.exports = { register, login };
+module.exports = { register, login, verify };

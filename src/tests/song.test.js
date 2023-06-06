@@ -3,6 +3,7 @@ const request = require("supertest");
 const app = require("../app");
 const Song = require("../models/Song");
 const db = require("../config/database");
+const User = require("../models/User");
 
 describe("Añadir y obtener canciones", () => {
   beforeAll(async () => {
@@ -10,8 +11,7 @@ describe("Añadir y obtener canciones", () => {
   });
 
   beforeEach(async () => {
-    await Song.deleteMany();
-    // Crea un par de canciones de prueba
+    /** Crea un par de canciones de prueba
     const song1 = {
       title: "Song1",
       artist: "Artist1",
@@ -40,12 +40,16 @@ describe("Añadir y obtener canciones", () => {
     this.song1Id = response.body.id;
     response = await request(app).post("/api/songs").send(song2);
     this.song2Id = response.body.id;
+     */
   });
 
   afterAll(async () => {
     await db.closeDB();
   });
-
+  afterEach(async () => {
+    await Song.deleteMany();
+    await User.deleteMany();
+  });
   describe("GET /api/songs", () => {
     it("should return a list of songs", async () => {
       const response = await request(app).get("/api/songs");
@@ -54,7 +58,37 @@ describe("Añadir y obtener canciones", () => {
     });
 
     it("should return songs with correct attributes", async () => {
-      const response = await request(app).get("/api/songs");
+      const user = await User.create({
+        name: "John Doe",
+        email: "john@example.com",
+        password: "password",
+      });
+
+      // Generar el token de autenticación para el usuario
+      const token = createUserToken(user);
+
+      // Crear una canción asociada al usuario
+      const songData = {
+        title: "Canción de prueba",
+        artist: "Artista de prueba",
+        date: "2023-05-01",
+        photo: "https://example.com/photo.jpg",
+        location: {
+          latitude: 37.7749,
+          longitude: -122.4194,
+          accuracy: 0.12345,
+        },
+      };
+
+      const response = await request(app)
+        .post("/api/songs")
+        .set("Authorization", `Bearer ${token}`)
+        .send(songData);
+      // Verificar que la canción se haya creado correctamente
+      expect(response.status).toBe(201);
+      expect(response.body).toHaveProperty("song");
+      expect(response.body.song.user).toBe(user._id.toString());
+      response = await request(app).get("/api/songs");
       const songs = response.body;
 
       // Verificar los atributos de una canción
@@ -65,6 +99,7 @@ describe("Añadir y obtener canciones", () => {
       expect(song).toHaveProperty("date");
       expect(song).toHaveProperty("photo");
       expect(song).toHaveProperty("location");
+      expect(song).toHaveProperty("user");
     });
   });
 
