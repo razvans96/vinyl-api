@@ -9,6 +9,7 @@ const commentSchema = new mongoose.Schema({
     longitude: { type: Number, required: true },
     accuracy: { type: Number, required: true },
   },
+  song: { type: mongoose.Schema.Types.ObjectId, ref: "Song", required: true },
 });
 
 const Comment = mongoose.model("Comment", commentSchema);

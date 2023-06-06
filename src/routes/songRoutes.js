@@ -10,6 +10,6 @@ router.get(
   auth.verify,
   songController.searchSpotifySongs
 );
-router.post("/songs", songController.createSong);
+router.post("/songs", auth.verify, songController.createSong);
 
 module.exports = router;

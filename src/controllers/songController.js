@@ -1,5 +1,6 @@
 const axios = require("axios");
 const Song = require("../models/Song");
+const { JSONResponse } = require("../config/jsonResponse");
 
 const getSongs = async (req, res, next) => {
   try {
@@ -15,14 +16,23 @@ const searchSongs = async (req, res, next) => {
     const { title, artist, date } = req.query;
 
     const query = {};
-    if (title) query.title = title;
-    if (artist) query.artist = artist;
+    if (title) query.title = { $regex: title, $options: "i" };
+    if (artist) query.artist = { $regex: artist, $options: "i" };
     if (date) query.date = date;
-
+    const hasCriteria = Object.keys(query).length > 0;
+    if (!hasCriteria) {
+      const songs = [];
+      return JSONResponse(res, 200, songs);
+    }
     const songs = await Song.find(query);
-    res.status(200).json(songs);
+    JSONResponse(res, 200, songs);
   } catch (error) {
-    next(error);
+    JSONResponse(res, error.code, {
+      error: {
+        code: error.code,
+        message: "La búsqueda ha fallado.",
+      },
+    });
   }
 };
 
@@ -62,7 +72,7 @@ const searchSpotifySongs = async (req, res, next) => {
 const createSong = async (req, res, next) => {
   try {
     const { title, artist, date, photo, location } = req.body;
-    const userId = req.user._id;
+    const userId = req.body.user;
     const newSong = new Song({
       title,
       artist,
@@ -75,6 +85,28 @@ const createSong = async (req, res, next) => {
     const createdSong = await newSong.save();
     res.status(201).json(createdSong);
   } catch (error) {
+    next(error);
+  }
+};
+
+const deleteSong = async (req, res, next) => {
+  try {
+    const userId = req.user.id;
+    const songId = req.params.id;
+
+    // Buscar la canción y verificar que el usuario sea el propietario
+    const song = await Song.findOne({ _id: songId, user: userId });
+
+    if (!song) {
+      return res.status(404).json({ message: "La canción no existe" });
+    }
+
+    // Eliminar la canción
+    await song.deleteOne();
+
+    res.status(200).json({ message: "Canción eliminada correctamente" });
+  } catch (error) {
+    console.error("Error al eliminar la canción:", error);
     next(error);
   }
 };
