@@ -19,27 +19,34 @@ describe("Registro y login de usuarios", () => {
 
   describe("POST /register", () => {
     it("debería registrar un nuevo usuario", async () => {
-      const response = await request(app)
-        .post("/api/register")
-        .send({ username: "testuser", password: "testpassword" });
+      const response = await request(app).post("/api/register").send({
+        username: "testuser",
+        password: "testpassword",
+        name: "testuser",
+      });
 
       expect(response.status).toBe(201);
       expect(response.body).toHaveProperty("token");
       expect(response.body).toHaveProperty("user");
       expect(response.body.user).toHaveProperty("id");
       expect(response.body.user).toHaveProperty("username");
+      expect(response.body.user).toHaveProperty("name");
     });
 
     it("debería retornar un error si se intenta registrar un usuario con un nombre de usuario ya existente", async () => {
       // Primero, registramos un usuario con un nombre de usuario
-      await request(app)
-        .post("/api/register")
-        .send({ username: "testuser", password: "testpassword" });
+      await request(app).post("/api/register").send({
+        username: "testuser",
+        password: "testpassword",
+        name: "testuser",
+      });
 
       // Luego, intentamos registrar otro usuario con el mismo nombre de usuario
-      const response = await request(app)
-        .post("/api/register")
-        .send({ username: "testuser", password: "anotherpassword" });
+      const response = await request(app).post("/api/register").send({
+        username: "testuser",
+        password: "anotherpassword",
+        name: "testuser",
+      });
 
       expect(response.status).toBe(400);
       expect(response.body).toHaveProperty(
@@ -52,9 +59,11 @@ describe("Registro y login de usuarios", () => {
   describe("POST /login", () => {
     it("debería permitir el inicio de sesión de un usuario registrado con credenciales válidas", async () => {
       // Primero, registramos un usuario con un nombre de usuario y contraseña
-      await request(app)
-        .post("/api/register")
-        .send({ username: "testuser", password: "testpassword" });
+      await request(app).post("/api/register").send({
+        username: "testuser",
+        password: "testpassword",
+        name: "testuser",
+      });
 
       // Luego, intentamos iniciar sesión con las mismas credenciales
       const response = await request(app)
