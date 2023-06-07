@@ -98,17 +98,33 @@ const deleteSong = async (req, res, next) => {
     const song = await Song.findOne({ _id: songId, user: userId });
 
     if (!song) {
-      return res.status(404).json({ message: "La canción no existe" });
+      return JSONResponse(res, 404, {
+        error: {
+          code: "404",
+          message: "Canción no encontrada.",
+        },
+      });
     }
 
     // Eliminar la canción
     await song.deleteOne();
 
-    res.status(200).json({ message: "Canción eliminada correctamente" });
+    JSONResponse(res, 200, { message: "Canción eliminada exitosamente" });
   } catch (error) {
     console.error("Error al eliminar la canción:", error);
-    next(error);
+    JSONResponse(res, 500, {
+      error: {
+        code: "500",
+        message: "Error en el servidor.",
+      },
+    });
   }
 };
 
-module.exports = { getSongs, searchSongs, searchSpotifySongs, createSong };
+module.exports = {
+  getSongs,
+  searchSongs,
+  searchSpotifySongs,
+  createSong,
+  deleteSong,
+};
