@@ -114,11 +114,13 @@ const createSong = async (req, res, next) => {
 
 const deleteSong = async (req, res, next) => {
   try {
-    const userId = req.user.id;
+    //const userId = req.user.id;
     const songId = req.params.id;
 
     // Buscar la canción y verificar que el usuario sea el propietario
-    const song = await Song.findOne({ _id: songId, user: userId });
+    const song = await Song.findOne({
+      _id: songId, // user: userId
+    });
 
     if (!song) {
       return JSONResponse(res, 404, {
