@@ -11,6 +11,29 @@ const getSongs = async (req, res, next) => {
   }
 };
 
+const getSong = async (req, res, next) => {
+  try {
+    const songId = req.params.id;
+    const song = await Song.findById(songId);
+    if (!song) {
+      return JSONResponse(res, 404, {
+        error: {
+          code: "404",
+          message: "Canción no encontrada.",
+        },
+      });
+    }
+    JSONResponse(res, 200, song);
+  } catch (error) {
+    JSONResponse(res, error.code, {
+      error: {
+        code: error.code,
+        message: "Error en el servidor.",
+      },
+    });
+  }
+};
+
 const searchSongs = async (req, res, next) => {
   try {
     const { title, artist, date } = req.query;
@@ -123,6 +146,7 @@ const deleteSong = async (req, res, next) => {
 
 module.exports = {
   getSongs,
+  getSong,
   searchSongs,
   searchSpotifySongs,
   createSong,

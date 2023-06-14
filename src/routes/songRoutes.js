@@ -4,6 +4,7 @@ const auth = require("../controllers/authController");
 const songController = require("../controllers/songController");
 
 router.get("/song", songController.getSongs);
+router.get("/song/:id", songController.getSong);
 router.get("/song/search", songController.searchSongs);
 router.get(
   "/song/spotifySearch",
