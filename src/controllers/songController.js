@@ -11,6 +11,16 @@ const getSongs = async (req, res, next) => {
     if (artist) query.artist = { $regex: artist, $options: "i" };
     if (date) query.date = date;
     const hasCriteria = Object.keys(query).length > 0;
+    if (title) {
+      const titleWords = title.split(" ");
+      query.title = { $all: titleWords.map((word) => new RegExp(word, "i")) };
+    }
+    if (artist) {
+      const artistWords = artist.split(" ");
+      query.artist = {
+        $all: artistWords.map((word) => new RegExp(word, "i")),
+      };
+    }
     const songs = hasCriteria ? await Song.find(query) : await Song.find();
     JSONResponse(res, 200, songs);
   } catch (error) {
@@ -108,7 +118,7 @@ const searchSpotifySongs = async (req, res, next) => {
 
 const createSong = async (req, res, next) => {
   try {
-    const { title, artist, date, photo, location } = req.body;
+    const { title, artist, date, photo, location, duration } = req.body;
     const userId = req.body.user;
     const newSong = new Song({
       title,
@@ -116,6 +126,7 @@ const createSong = async (req, res, next) => {
       date,
       photo,
       location,
+      duration,
       user: userId,
     });
 
