@@ -3,11 +3,23 @@ const Song = require("../models/Song");
 const { JSONResponse } = require("../config/jsonResponse");
 
 const getSongs = async (req, res, next) => {
+  //look for title, artist, date in req.query and filter songs. If no query, return all songs
   try {
-    const songs = await Song.find();
-    res.status(200).json(songs);
+    const { title, artist, date } = req.query;
+    const query = {};
+    if (title) query.title = { $regex: title, $options: "i" };
+    if (artist) query.artist = { $regex: artist, $options: "i" };
+    if (date) query.date = date;
+    const hasCriteria = Object.keys(query).length > 0;
+    const songs = hasCriteria ? await Song.find(query) : await Song.find();
+    JSONResponse(res, 200, songs);
   } catch (error) {
-    next(error);
+    JSONResponse(res, error.code, {
+      error: {
+        code: error.code,
+        message: "Error en el servidor.",
+      },
+    });
   }
 };
 
@@ -33,7 +45,7 @@ const getSong = async (req, res, next) => {
     });
   }
 };
-
+/**
 const searchSongs = async (req, res, next) => {
   try {
     const { title, artist, date } = req.query;
@@ -58,6 +70,8 @@ const searchSongs = async (req, res, next) => {
     });
   }
 };
+
+ */
 
 const searchSpotifySongs = async (req, res, next) => {
   try {
@@ -84,8 +98,8 @@ const searchSpotifySongs = async (req, res, next) => {
       photo: item.album.images[0].url,
       duration: item.duration_ms,
     }));
-
-    res.status(200).json({ songs });
+    // Envía los resultados al cliente en formato JSON (array de canciones)
+    JSONResponse(res, 200, songs);
   } catch (error) {
     console.log("Error al obtener el listado de canciones de Spotify.");
     next(error);
@@ -149,7 +163,7 @@ const deleteSong = async (req, res, next) => {
 module.exports = {
   getSongs,
   getSong,
-  searchSongs,
+  //searchSongs,
   searchSpotifySongs,
   createSong,
   deleteSong,

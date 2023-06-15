@@ -5,12 +5,7 @@ const songController = require("../controllers/songController");
 
 router.get("/song", songController.getSongs);
 router.get("/song/:id", songController.getSong);
-router.get("/song/search", songController.searchSongs);
-router.get(
-  "/song/spotifySearch",
-  auth.verify,
-  songController.searchSpotifySongs
-);
+router.get("/spotifySearch", auth.verify, songController.searchSpotifySongs);
 router.post("/song", auth.verify, songController.createSong);
 router.delete("/song/:id", auth.verify, songController.deleteSong);
 
