@@ -106,7 +106,7 @@ describe("Song API", () => {
       });
 
       const response = await request(app).get(
-        "/api/song/search?title=Song1&artist=Artist1"
+        "/api/song?title=Song1&artist=Artist1"
       );
       expect(response.status).toBe(200);
 
