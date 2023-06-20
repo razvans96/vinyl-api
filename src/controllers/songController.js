@@ -118,13 +118,15 @@ const searchSpotifySongs = async (req, res, next) => {
 
 const createSong = async (req, res, next) => {
   try {
-    const { title, artist, date, photo, location, duration } = req.body;
+    const { title, artist, date, photo, photobase64, location, duration } =
+      req.body;
     const userId = req.body.user;
     const newSong = new Song({
       title,
       artist,
       date,
       photo,
+      photobase64,
       location,
       duration,
       user: userId,

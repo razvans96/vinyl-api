@@ -5,6 +5,10 @@ require("dotenv").config();
 const authRoutes = require("./routes/authRoutes");
 const songRoutes = require("./routes/songRoutes");
 const commentRoutes = require("./routes/commentRoutes");
+const bodyParser = require("body-parser");
+app.use(bodyParser.json({ limit: "10mb" }));
+app.use(bodyParser.urlencoded({ limit: "10mb", extended: true }));
+
 //const spotify = require("./config/spotify");
 
 //spotify.renewSpotifyAccessToken();

@@ -4,7 +4,8 @@ const songSchema = new mongoose.Schema({
   title: { type: String, required: true },
   artist: { type: String, required: true },
   date: { type: Date, required: true },
-  photo: { type: String, required: true },
+  photo: { type: String, required: false },
+  photobase64: { type: String, required: false },
   duration: { type: Number },
   location: {
     latitude: { type: Number, required: true },
