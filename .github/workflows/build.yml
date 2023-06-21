@@ -78,10 +78,10 @@ jobs:
         run: ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
       - name: Deploy
         run: |
-            ssh ubuntu@${{ secrets.SSH_HOST }} "if [ ! -d 'vinyl-api' ]; then \
+            ssh vinyl@${{ secrets.SSH_HOST }} "if [ ! -d 'vinyl-api' ]; then \
                 git clone https://github.com/razvans96/vinyl-api.git; \
               else \
                 cd vinyl-api && git stash && git fetch --all && git reset --hard origin/main && git pull origin main; \
               fi"
-            ssh ubuntu@${{ secrets.SSH_HOST }} "cd vinyl-api && echo -e 'MONGODB_URI=${{ secrets.MONGODB_URI }}\nCLIENT_ID=${{ secrets.CLIENT_ID }}\nCLIENT_SECRET=${{ secrets.CLIENT_SECRET }}\nJWT_SECRET=${{ secrets.JWT_SECRET}}\nJWT_EXPIRES_IN=${{ secrets.JWT_EXPIRES_IN }}' > .env"
-            ssh ubuntu@${{ secrets.SSH_HOST }} "cd vinyl-api && docker-compose pull && docker-compose up -d --remove-orphans && yes | docker image prune"
+            ssh vinyl@${{ secrets.SSH_HOST }} "cd vinyl-api && echo -e 'MONGODB_URI=${{ secrets.MONGODB_URI }}\nCLIENT_ID=${{ secrets.CLIENT_ID }}\nCLIENT_SECRET=${{ secrets.CLIENT_SECRET }}\nJWT_SECRET=${{ secrets.JWT_SECRET}}\nJWT_EXPIRES_IN=${{ secrets.JWT_EXPIRES_IN }}' > .env"
+            ssh vinyl@${{ secrets.SSH_HOST }} "cd vinyl-api && docker-compose pull && docker-compose up -d --remove-orphans && yes | docker image prune"
