@@ -11,8 +11,7 @@ const renewSpotifyAccessToken = async (req, res) => {
       const data = response.data;
       spotifyToken = data.access_token;
       process.env.CLIENT_TOKEN = spotifyToken;
-      console.log(`Token de Spotify actualizado: ${spotifyToken}`);
-      setTimeout(renewSpotifyAccessToken, (data.expires_in - 60) * 1000);
+      //console.log(`Token de Spotify actualizado: ${spotifyToken}`);
       JSONResponse(res, 200, response.data);
     } else {
       console.error("Error en la autenticación con Spotify");

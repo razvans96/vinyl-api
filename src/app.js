@@ -6,6 +6,7 @@ const authRoutes = require("./routes/authRoutes");
 const songRoutes = require("./routes/songRoutes");
 const commentRoutes = require("./routes/commentRoutes");
 const bodyParser = require("body-parser");
+const spotify = require("./config/spotify");
 app.use(bodyParser.json({ limit: "10mb" }));
 app.use(bodyParser.urlencoded({ limit: "10mb", extended: true }));
 
@@ -21,6 +22,12 @@ app.use(express.urlencoded({ extended: false }));
 app.use("/api", authRoutes);
 app.use("/api", songRoutes);
 app.use("/api", commentRoutes);
+
+spotify.renewSpotifyAccessToken();
+// Ejecutar spotify.renewSpotifyAccessToken() cada 50 minutos
+setInterval(() => {
+  spotify.renewSpotifyAccessToken();
+}, 3000000);
 
 // Manejo de errores
 app.use((err, req, res, next) => {
