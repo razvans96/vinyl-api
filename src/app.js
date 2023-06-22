@@ -25,9 +25,11 @@ app.use("/api", commentRoutes);
 
 spotify.renewSpotifyAccessToken();
 // Ejecutar spotify.renewSpotifyAccessToken() cada 50 minutos
-setInterval(() => {
-  spotify.renewSpotifyAccessToken();
-}, 3000000);
+if (process.env.NODE_ENV === "production") {
+  setInterval(() => {
+    spotify.renewSpotifyAccessToken();
+  }, 3000000);
+}
 
 // Manejo de errores
 app.use((err, req, res, next) => {
