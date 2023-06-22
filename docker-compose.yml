@@ -59,7 +59,7 @@ volumes:
     driver: local
     driver_opts:
       type: none
-      device: /home/vinyl/vinyl-api/src/views/
+      device: /home/vinyl/vinyl-api/views/
       o: bind
 
 networks:
